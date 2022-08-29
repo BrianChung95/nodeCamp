@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const morgan = require("morgan");
 const { readdirSync } = require("fs");
+const config = require('./config/config');
 
 require("dotenv").config();
 
@@ -10,11 +11,11 @@ const app = express();
 
 //database
 mongoose
-  .connect(process.env.DATABASE, {})
+  .connect(config.mongoose.url, config.mongoose.options)
   .then(() => {
     console.log("Connected to MongoDB");
-    server = app.listen(process.env.PORT || 8000, () => {
-      console.log(`Listening to port ${process.env.PORT}`);
+    server = app.listen(config.port, () => {
+      console.log(`Listening to port ${config.port}`);
     });
   })
   .catch((err) => console.log("MongoDB Error => ", err));
