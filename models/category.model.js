@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
+// const validator = require('validator');
 
 const categorySchema = mongoose.Schema(
   {
@@ -14,6 +14,11 @@ const categorySchema = mongoose.Schema(
     timestamps: true,
   }
 );
+
+categorySchema.statics.isCategoryExist = async function(id) {
+  const category = await this.findById(id);
+  return category !== undefined
+}
 
 const Category = mongoose.model("Category", categorySchema);
 
