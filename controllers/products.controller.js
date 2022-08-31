@@ -1,13 +1,6 @@
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
-const { categoryService, productService } = require('../services')
-
-const getAllCategories = catchAsync(async (req, res) => {
-  const data = await categoryService.getCategories();
-  res.status(httpStatus.OK).send({
-    data
-  })
-});
+const { productService } = require('../services')
 
 const getAllProducts = catchAsync(async (req, res) => {
   const data = await productService.getAllProducts();
@@ -49,7 +42,6 @@ const createProduct = catchAsync(async (req, res) => {
 });
 
 module.exports = {
-  getAllCategories,
   getAllProducts,
   getProductsByCategory,
   getProductById,
