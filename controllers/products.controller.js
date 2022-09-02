@@ -1,6 +1,19 @@
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
-const { productService } = require('../services')
+const { productService, categoryService } = require('../services')
+
+const getAllProductsAndAllCategories = catchAsync(async (req, res) => {
+  const productData = await productService.getAllProducts();
+  const categoriesData = await categoryService.getCategories();
+  const data = {
+    products: productData,
+    categories: categoriesData
+  };
+  res.status(httpStatus.OK).send({
+    products: productData,
+    categories: categoriesData
+  });
+})
 
 const getAllProducts = catchAsync(async (req, res) => {
   const data = await productService.getAllProducts();
@@ -11,7 +24,12 @@ const getAllProducts = catchAsync(async (req, res) => {
 
 const getProductsByCategory = catchAsync(async (req, res) => {
   const cateid = req.params.cateId;
-  const data = await productService.getProductsByCategoryId(cateid);
+  let data;
+  if (cateid !== undefined) {
+    data = await productService.getProductsByCategoryId(cateid);
+  } else {
+    data = await productService.getAllProducts();
+  }
   res.status(httpStatus.OK).send({ 
     data
   });
@@ -42,6 +60,7 @@ const createProduct = catchAsync(async (req, res) => {
 });
 
 module.exports = {
+  getAllProductsAndAllCategories,
   getAllProducts,
   getProductsByCategory,
   getProductById,

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { toJSON, paginate } = require("./plugins");
 
 const productSchema = mongoose.Schema(
   {
@@ -42,6 +43,9 @@ const productSchema = mongoose.Schema(
     timestamps: true
   }
 )
+
+productSchema.plugin(toJSON);
+productSchema.plugin(paginate);
 
 const Product = mongoose.model("Product", productSchema);
 
