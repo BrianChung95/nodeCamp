@@ -10,18 +10,8 @@ const {
 
 router.get("/cart", getAllCartItems);
 
-router.post(
-  "/cartItem/:productId",
-  requireSignin,
-  userMiddleware,
-  addItemToCart
-);
+router.post("/cartItem/:productId", addItemToCart);
 
-router.delete(
-  "/cartItem/:productId",
-  requireSignin,
-  userMiddleware,
-  removeCartItems
-);
+router.delete("/cartItem/:productId", removeCartItems);
 
 module.exports = router;

@@ -13,4 +13,66 @@ const getCartByUserId = async (userId) => {
   }
 };
 
-module.exports = { getCartByUserId };
+const creatCart = async (userId, cartItems) => {
+  let newCartBody = { userId, cartItems };
+  return Cart.create(newCartBody);
+};
+
+const addItemsToUserCart = async (cart, items, quantity) => {
+  const { _id, price } = items;
+  if (cart) {
+    //if cart exists
+    const itemIndex = cart.cartItems.findIndex(
+      (item) => item.productId === _id
+    );
+
+    if (itemIndex > -1) {
+      // if product exists in cart
+      let product = cart.cartItems[itemIndex];
+      product.quantity += quantity;
+      cart.cartItems[itemIndex] = product;
+      await cart.save();
+      return cart;
+    } else {
+      //if product doesn't exist
+      cart.cartItems.push({ productId: _id, quantity, price });
+      await cart.save();
+      return cart;
+    }
+  } else {
+    //if cart doesn't exist
+    let cartItems = { productId: _id, quantity, price };
+    return creatCart(_id, cartItems);
+  }
+};
+
+const deleteItemsFromUserCart = async (cart, items, quantity) => {
+  const { _id } = items;
+  if (cart) {
+    //if cart exists
+    const itemIndex = cart.cartItems.findIndex(
+      (item) => item.productId === _id
+    );
+
+    if (itemIndex > -1) {
+      // if product exists in cart
+      let product = cart.cartItems[itemIndex];
+      product.quantity -= quantity;
+      cart.cartItems[itemIndex] = product;
+      await cart.save();
+      return cart;
+    } else {
+      //if product doesn't exist
+      console.log("items not found");
+    }
+  } else {
+    //if cart doesn't exist
+    console.log("items not found");
+  }
+};
+
+module.exports = {
+  getCartByUserId,
+  addItemsToUserCart,
+  deleteItemsFromUserCart,
+};
