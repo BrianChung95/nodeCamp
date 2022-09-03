@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
+const { toJSON, paginate } = require("./plugins");
 
 const productSchema = mongoose.Schema(
   {
-    categoryId: {
-      type: Number,
+    category: {
+      type: mongoose.Types.ObjectId,
       required: true
     },
     name: {
@@ -42,6 +43,9 @@ const productSchema = mongoose.Schema(
     timestamps: true
   }
 )
+
+productSchema.plugin(toJSON);
+productSchema.plugin(paginate);
 
 const Product = mongoose.model("Product", productSchema);
 
