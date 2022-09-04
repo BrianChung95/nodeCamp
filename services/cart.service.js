@@ -1,4 +1,4 @@
-import Cart from "../models";
+const { Cart } = require("../models");
 
 const getCartByUserId = async (userId) => {
   try {

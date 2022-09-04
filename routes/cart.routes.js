@@ -3,14 +3,14 @@ const router = express.Router();
 
 //controllers
 const {
-  addItemToCart,
+  addItemsToCart,
   getAllCartItems,
   removeCartItems,
 } = require("../controllers/cart.controller");
 
 router.get("/cart", getAllCartItems);
 
-router.post("/cartItem/:productId", addItemToCart);
+router.post("/cartItem/:productId", addItemsToCart);
 
 router.delete("/cartItem/:productId", removeCartItems);
 
