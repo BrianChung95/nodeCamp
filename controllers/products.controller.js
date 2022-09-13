@@ -37,14 +37,21 @@ const getProductsByCategory = catchAsync(async (req, res) => {
 
 const getProductById = catchAsync(async (req, res) => {
   const id = req.params.id;
-  const data = await productService.getProductById(id);
-  if (data === null) {
+  if (id === null) {
+    return
+  }
+  const productData = await productService.getProductById(id);
+  const categoryID = productData.category;
+  const categoryData = await categoryService.getCategoryById(categoryID);
+  if (productData === null) {
     res.status(httpStatus.NOT_FOUND).send({
       err: "Not Found"
     });
   } else {
     res.status(httpStatus.OK).send({
-      data
+      // data
+      productData,
+      categoryData
     });
   }
 });

@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const httpStatus = require("http-status");
-const { Category } = require('../models');
-const { Product } = require('../models/product.model')
+const { Category, Product } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 const createProduct = async (userBody) => {
@@ -23,7 +22,8 @@ const createProduct = async (userBody) => {
 };
 
 const getProductById = async (id) => {
-  return Product.findById(id);
+  const _id = mongoose.Types.ObjectId(id);
+  return Product.findById(_id);
 }
 
 const getAllProducts = async () => {

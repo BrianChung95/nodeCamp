@@ -11,7 +11,7 @@ const getAllCategories = catchAsync(async (req, res) => {
 
 const createCategory = catchAsync(async (req, res) => {
   const newCategory = await categoryService.createCategory(req.body);
-  console.log(newCategory);
+  // console.log(newCategory);
   res.send({
     "success": true,
     "message": "Create category success"
