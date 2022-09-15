@@ -1,6 +1,7 @@
+const mongoose = require('mongoose');
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
-const { orderService } = require('../services');
+const { orderService, productService } = require('../services');
 
 const createOrder = catchAsync(async (req, res) => {
   const reqBody = req.body;
@@ -10,6 +11,19 @@ const createOrder = catchAsync(async (req, res) => {
   });
 })
 
+// multiple table
+const getOrderById = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  if (id === null) {
+    return
+  }
+  const orderData = await orderService.getOrderWithProductDatasById(id);
+  res.status(httpStatus.OK).send({
+    data: orderData
+  });
+})
+
 module.exports = {
-  createOrder
+  createOrder,
+  getOrderById
 };

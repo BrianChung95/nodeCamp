@@ -26,6 +26,15 @@ const getProductById = async (id) => {
   return Product.findById(_id);
 }
 
+const getProductsByIds = async (ids) => {
+  const _ids = ids.map((i) => { return mongoose.Types.ObjectId(i) });
+  return Product.find({
+    '_id': {
+      $in: _ids
+    }
+  })
+}
+
 const getAllProducts = async () => {
   return Product.find();
 }
@@ -34,4 +43,10 @@ const getProductsByCategoryId = async (cateId) => {
   return Product.find({ category: cateId });
 }
 
-module.exports = { createProduct, getProductById, getAllProducts, getProductsByCategoryId }
+module.exports = { 
+  createProduct, 
+  getProductById, 
+  getAllProducts, 
+  getProductsByCategoryId,
+  getProductsByIds
+}

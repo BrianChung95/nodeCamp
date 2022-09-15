@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const { productSchema } = require('./product.model');
 
 const purchaseInfoSchema = mongoose.Schema(
   {
@@ -44,7 +45,7 @@ const orderItemSchema = mongoose.Schema(
   }
 )
 
-const statusEnum = ["CREATED", "CANCELED", "PURCHASED"]
+const statusEnum = ["PENDING", "CANCELED", "COMPLETED"]
 
 const orderSchema = mongoose.Schema(
   {
@@ -64,10 +65,14 @@ const orderSchema = mongoose.Schema(
       type: Number,
       required: true
     },
+    totalQuantity: {
+      type: Number,
+      required: true
+    },
     status: {
       type: String,
       enum: statusEnum,
-      default: "CREATED"
+      default: "PENDING"
     }
   }, {
     timestamps: true
