@@ -27,10 +27,10 @@ const getProductById = async (id) => {
 }
 
 const getProductsByIds = async (ids) => {
-  const _ids = ids.map((i) => { return mongoose.Types.ObjectId(i) });
+  // const _ids = ids.map((i) => { return mongoose.Types.ObjectId(i) });
   return Product.find({
     '_id': {
-      $in: _ids
+      $in: ids
     }
   })
 }

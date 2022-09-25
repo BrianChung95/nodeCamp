@@ -5,7 +5,6 @@ const ApiError = require('../utils/ApiError');
 
 const createOrder = async (userBody) => {
   const { userId, orderItems } = userBody;
-  const objectedIDUserId = mongoose.Types.ObjectId(userId);
   const costPrice = orderItems.reduce((pre, cur) => pre + cur.price, 0);
   const totalQuantity = orderItems.reduce((pre, cur) => pre + cur.quantity, 0);
   return Order.create({
@@ -53,5 +52,18 @@ const getOrderWithProductDatasById = async (id) => {
 
   }
 };
+
+const editOrder = async (id, userBody) => {
+  // Order.findByIdAndUpdate(id, userBody)
+}
+
+const payOrder = async (id, userBody) => {
+  const { email, name, creditCardNumber } = userBody;
+  
+}
+
+const updateOrderState = async (id, userBody) => {
+
+}
 
 module.exports = { createOrder, getOrderById, getOrderWithProductDatasById };
