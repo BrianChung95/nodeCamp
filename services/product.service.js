@@ -27,13 +27,21 @@ const getProductById = async (id) => {
 }
 
 const getProductsByIds = async (ids) => {
-  // const _ids = ids.map((i) => { return mongoose.Types.ObjectId(i) });
   return Product.find({
     '_id': {
       $in: ids
     }
   })
 }
+
+// const getProductsByIdsSync = (ids) => {
+//   const response = Product.find({
+//     '_id': {
+//       $in: ids
+//     }
+//   });
+//   console.log(response);
+// }
 
 const getAllProducts = async () => {
   return Product.find();

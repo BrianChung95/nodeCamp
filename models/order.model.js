@@ -22,28 +22,33 @@ const purchaseInfoSchema = mongoose.Schema(
       type: String,
       required: true,
       trim: true
+    },
+    expireDate: {
+      type: String,
+      require: true,
+      trim: true
     }
   }, {
     timestamps: true
   }
 )
 
-const orderItemSchema = mongoose.Schema(
-  {
-    productId: {
-      type: String,
-      required: true
-    },
-    quantity: {
-      type: Number, 
-      required: true
-    },
-    price: {
-      type: Number,
-      required: true
-    }
-  }
-)
+// const orderItemSchema = mongoose.Schema(
+//   {
+//     productId: {
+//       type: String,
+//       required: true
+//     },
+//     quantity: {
+//       type: Number, 
+//       required: true
+//     },
+//     price: {
+//       type: Number,
+//       required: true
+//     }
+//   }
+// )
 
 const statusEnum = ["PENDING", "CANCELED", "COMPLETED"]
 
@@ -57,10 +62,22 @@ const orderSchema = mongoose.Schema(
       type: purchaseInfoSchema,
       required: false
     },
-    orderItems: {
-      type: [orderItemSchema],
-      required: true
-    },
+    orderItems: [
+      {
+        productId: {
+          type: String,
+          required: true
+        },
+        quantity: {
+          type: Number, 
+          required: true
+        },
+        price: {
+          type: Number,
+          required: true
+        }
+      }
+    ],
     costPrice: {
       type: Number,
       required: true

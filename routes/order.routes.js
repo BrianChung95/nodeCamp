@@ -9,4 +9,10 @@ router.route('/order')
 router.route('/order/:id')
   .get(orderController.getOrderById);
 
+router.route('/order/:id/:operation')
+  .patch(orderController.updateOrderById);
+
+router.route('/orders/:userId')
+  .get(orderController.getOrdersByUserId);
+
 module.exports = router;

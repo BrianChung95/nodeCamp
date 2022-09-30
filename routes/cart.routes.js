@@ -7,6 +7,6 @@ router.route('/cart/:userId')
   .get(cartController.getCart);
 
 router.route('/cart/:userId')
-  .put(cartController.updateCart);
+  .patch(cartController.updateCart);
 
 module.exports = router;
