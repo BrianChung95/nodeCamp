@@ -1,18 +1,18 @@
 const express = require("express");
-const orderController = require('../controllers/order.controller');
+const orderController = require("../controllers/order.controller");
+const { checkJWT } = require("../middlewares/AuthorizationMiddleware");
 
 const router = express.Router();
 
 router.route('/order')
-  .post(orderController.createOrder);
+  .post(checkJWT, orderController.createOrder);
 
 router.route('/order/:id')
-  .get(orderController.getOrderById);
+  .get(checkJWT, orderController.getOrderById);
 
 router.route('/order/:id/:operation')
-  .patch(orderController.updateOrderById);
+  .patch(checkJWT, orderController.updateOrderById);
 
-router.route('/orders/:userId')
-  .get(orderController.getOrdersByUserId);
+router.get("/orders", checkJWT, orderController.getOrdersByUserId);
 
 module.exports = router;

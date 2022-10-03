@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const httpStatus = require('http-status');
-const catchAsync = require('../utils/catchAsync');
-const { orderService } = require('../services');
+const mongoose = require("mongoose");
+const httpStatus = require("http-status");
+const catchAsync = require("../utils/catchAsync");
+const { orderService } = require("../services");
 
 const createOrder = catchAsync(async (req, res) => {
   const reqBody = req.body;
@@ -14,22 +14,27 @@ const createOrder = catchAsync(async (req, res) => {
     res.status(httpStatus.OK).send({
       data: response.data._id,
       error: null
-    })
+    });
   }
 })
 
 const getOrdersByUserId = catchAsync(async (req, res) => {
-  const userId = req.params.userId;
+  const { userId } = req.locals;
+  if (userId === undefined) {
+    res.send({
+      error: "User was not found"
+    });
+  }
   const response = await orderService.getOrdersByUserId(userId);
   if (response.success === false) {
     res.send({
       error: response.error
-    })
+    });
   } else {
     res.send({
       data: response.data,
       error: null
-    })
+    });
   }
 })
 
@@ -59,10 +64,10 @@ const updateOrderById = catchAsync(async (req, res) => {
   const operation = req.params.operation;
   if (id === null) {
     return {
-      error: 'ID was null'
+      error: "ID was null"
     }
   }
-  if (operation === 'pay') {
+  if (operation === "pay") {
     const reqBody = req.body;
     const response = await orderService.payOrder(id, reqBody);
     if (response.success === false) {
@@ -75,7 +80,7 @@ const updateOrderById = catchAsync(async (req, res) => {
         error: null
       })
     }
-  } else if (operation === 'cancel') {
+  } else if (operation === "cancel") {
     const response = await orderService.cancelOrder(id);
     if (response.success === false) {
       res.send({

@@ -3,37 +3,45 @@ const catchAsync = require('../utils/catchAsync');
 const { cartService, productService } = require('../services');
 
 const getCart = catchAsync(async (req, res) => {
-  const userId = req.params.userId;
+  const userId = req.locals.userId;
+  if (userId === undefined) {
+    res.send({
+      error: "User was not found"
+    });
+  }
   const response = await cartService.getCart(userId);
   if (response.success === false) {
     res.send({
-      success: false,
       error: response.error
     });
   }
   const cartItems = response.data.cartItems;
   const newCartItems = await makeupData(cartItems);
   res.status(httpStatus.OK).send({
-    success: true,
-    cartItems: newCartItems
+    error: null,
+    data: newCartItems
   });
 });
 
 const updateCart = catchAsync(async (req, res) => {
-  const userId = req.params.userId;
+  const userId = req.locals.userId;
+  if (userId === undefined) {
+    res.send({
+      error: "User was not found"
+    })
+  }
   const { cart } = req.body;
   const response = await cartService.updateCart({ userId, cart })
   if (response.success === false) {
     res.send({
-      success: false,
-      error: response.error,
+      error: response.error
     });
   }
   const cartItems = response.data.cartItems;
   const newCartItems = await makeupData(cartItems);
   res.status(httpStatus.OK).send({
-    success: true,
-    cartItems: newCartItems
+    error: null,
+    data: newCartItems
   });
 })
 

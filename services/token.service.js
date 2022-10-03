@@ -89,4 +89,28 @@ const generateAuthTokens = async (user) => {
   };
 };
 
-module.exports = { generateToken, saveToken, generateAuthTokens };
+const validateToken = async (jwt) => {
+  const token = await Token.findOne({'token': jwt});
+  if (token === null) {
+    return {
+      success: false,
+      error: "Invalidate Token: not existed"
+    }
+  }
+  const expiredDate = token.expires;
+  const parsedExpirtedDate = Date.parse(expiredDate);
+  const now = new Date();
+  if (parsedExpirtedDate < now.getTime()) {
+    return {
+      success: false,
+      error: "Invalidate Token: expired"
+    }
+  } else {
+    return {
+      success: true,
+      data: token._id
+    }
+  }
+}
+
+module.exports = { generateToken, saveToken, generateAuthTokens, validateToken };
