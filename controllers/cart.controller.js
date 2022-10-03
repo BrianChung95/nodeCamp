@@ -9,18 +9,19 @@ const getCart = catchAsync(async (req, res) => {
       error: "User was not found"
     });
   }
-  const response = await cartService.getCart(userId);
-  if (response.success === false) {
+  try {
+    const response = await cartService.getCart(userId);
+    const cartItems = response.data.cartItems;
+    const newCartItems = await makeupData(cartItems);
     res.send({
-      error: response.error
+      error: null,
+      data: newCartItems
     });
+  } catch (error) {
+    res.send({
+      error: error.message
+    })
   }
-  const cartItems = response.data.cartItems;
-  const newCartItems = await makeupData(cartItems);
-  res.status(httpStatus.OK).send({
-    error: null,
-    data: newCartItems
-  });
 });
 
 const updateCart = catchAsync(async (req, res) => {
@@ -31,18 +32,19 @@ const updateCart = catchAsync(async (req, res) => {
     })
   }
   const { cart } = req.body;
-  const response = await cartService.updateCart({ userId, cart })
-  if (response.success === false) {
-    res.send({
-      error: response.error
+  try {
+    const response = await cartService.updateCart({ userId, cart })
+    const cartItems = response.data.cartItems;
+    const newCartItems = await makeupData(cartItems);
+    res.status(httpStatus.OK).send({
+      error: null,
+      data: newCartItems
     });
+  } catch (error) {
+    res.send({
+      error: error.message
+    })
   }
-  const cartItems = response.data.cartItems;
-  const newCartItems = await makeupData(cartItems);
-  res.status(httpStatus.OK).send({
-    error: null,
-    data: newCartItems
-  });
 })
 
 const makeupData = async (cartDataInDoc) => {

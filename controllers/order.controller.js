@@ -5,16 +5,16 @@ const { orderService } = require("../services");
 
 const createOrder = catchAsync(async (req, res) => {
   const reqBody = req.body;
-  const response = await orderService.createOrder(reqBody);
-  if (response.success === false) {
+  try {
+    const newOrder = await orderService.createOrder(reqBody);
     res.send({
-      error: response.error
-    });
-  } else {
-    res.status(httpStatus.OK).send({
-      data: response.data._id,
-      error: null
-    });
+      error: null,
+      data: newOrder.data_id
+    })
+  } catch (error) {
+    res.send({
+      error: error.message
+    })
   }
 })
 
@@ -25,17 +25,21 @@ const getOrdersByUserId = catchAsync(async (req, res) => {
       error: "User was not found"
     });
   }
-  const response = await orderService.getOrdersByUserId(userId);
-  if (response.success === false) {
-    res.send({
-      error: response.error
-    });
-  } else {
-    res.send({
-      data: response.data,
-      error: null
-    });
-  }
+  const data = await orderService.getOrdersByUserId(userId);
+  // if (response.success === false) {
+  //   res.send({
+  //     error: response.error
+  //   });
+  // } else {
+  //   res.send({
+  //     data: response.data,
+  //     error: null
+  //   });
+  // }
+  res.send({
+    error: null,
+    data: data
+  });
 })
 
 // multiple table
@@ -46,17 +50,28 @@ const getOrderById = catchAsync(async (req, res) => {
       error: "ID was null"
     })
   }
-  const response = await orderService.getOrderWithProductDatasById(id);
-  if (response.success === false) {
+  try {
+    const data = await orderService.getOrderWithProductDatasById(id);
     res.send({
-      error: response.error
+      error: null,
+      data: data
     })
-  } else {
-    res.status(httpStatus.OK).send({
-      data: response.data,
-      error: null
+  } catch (error) {
+    res.send({
+      error: error.message
     })
   }
+  // const response = await orderService.getOrderWithProductDatasById(id);
+  // if (response.success === false) {
+  //   res.send({
+  //     error: response.error
+  //   })
+  // } else {
+  //   res.status(httpStatus.OK).send({
+  //     data: response.data,
+  //     error: null
+  //   })
+  // }
 })
 
 const updateOrderById = catchAsync(async (req, res) => {
@@ -69,29 +84,51 @@ const updateOrderById = catchAsync(async (req, res) => {
   }
   if (operation === "pay") {
     const reqBody = req.body;
-    const response = await orderService.payOrder(id, reqBody);
-    if (response.success === false) {
+    try {
+      const data = await orderService.payOrder(id, reqBody);
       res.send({
-        error: response.error
+        error: null,
+        data: data
       })
-    } else {
-      res.status(httpStatus.OK).send({
-        data: response.data,
-        error: null
+    } catch (error) {
+      res.send({
+        error: error.message
       })
     }
+    // const response = await orderService.payOrder(id, reqBody);
+    // if (response.success === false) {
+    //   res.send({
+    //     error: response.error
+    //   })
+    // } else {
+    //   res.status(httpStatus.OK).send({
+    //     data: response.data,
+    //     error: null
+    //   })
+    // }
   } else if (operation === "cancel") {
-    const response = await orderService.cancelOrder(id);
-    if (response.success === false) {
+    try {
+      const data = await orderService.cancelOrder(id);
       res.send({
-        error: response.error
+        error: null,
+        data: data
       })
-    } else {
-      res.status(httpStatus.OK).send({
-        data: response.data,
-        error: null
+    } catch (error) {
+      res.send({
+        error: error.message
       })
     }
+    // const response = await orderService.cancelOrder(id);
+    // if (response.success === false) {
+    //   res.send({
+    //     error: response.error
+    //   })
+    // } else {
+    //   res.status(httpStatus.OK).send({
+    //     data: response.data,
+    //     error: null
+    //   })
+    // }
   } else {
     res.send({
       error: "Request denied"
