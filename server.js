@@ -4,6 +4,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const { readdirSync } = require("fs");
 const config = require('./config/config');
+const httpStatus = require("http-status");
 
 require("dotenv").config();
 
@@ -38,3 +39,9 @@ app.use(
 readdirSync("./routes").map((route) =>
   app.use("/api", require(`./routes/${route}`))
 );
+
+app.use((req, res, next) => {
+  res.status(httpStatus.NOT_FOUND).send({
+    error: "Not Found"
+  })
+});

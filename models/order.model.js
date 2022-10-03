@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
-const { productSchema } = require('./product.model'); 
+const { productSchema } = require('./product.model');
 
 const purchaseInfoSchema = mongoose.Schema(
   {
@@ -22,34 +22,74 @@ const purchaseInfoSchema = mongoose.Schema(
       type: String,
       required: true,
       trim: true
+    },
+    expireDate: {
+      type: String,
+      require: true,
+      trim: true
     }
   }, {
     timestamps: true
   }
 )
 
+// const orderItemSchema = mongoose.Schema(
+//   {
+//     productId: {
+//       type: String,
+//       required: true
+//     },
+//     quantity: {
+//       type: Number, 
+//       required: true
+//     },
+//     price: {
+//       type: Number,
+//       required: true
+//     }
+//   }
+// )
+
+const statusEnum = ["PENDING", "CANCELED", "COMPLETED"]
+
 const orderSchema = mongoose.Schema(
   {
     userId: {
-      type: Number,
+      type: mongoose.Types.ObjectId,
       required: true
-    },
-    orderId: {
-      type: String,
-      required: true,
-      trim: true
     },
     purchaseInfo: {
       type: purchaseInfoSchema,
-      required: true
+      required: false
     },
-    purchasedItem: {
-      type: [productSchema],
-      required: true
-    },
+    orderItems: [
+      {
+        productId: {
+          type: String,
+          required: true
+        },
+        quantity: {
+          type: Number, 
+          required: true
+        },
+        price: {
+          type: Number,
+          required: true
+        }
+      }
+    ],
     costPrice: {
       type: Number,
       required: true
+    },
+    totalQuantity: {
+      type: Number,
+      required: true
+    },
+    status: {
+      type: String,
+      enum: statusEnum,
+      default: "PENDING"
     }
   }, {
     timestamps: true

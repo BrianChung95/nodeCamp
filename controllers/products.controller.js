@@ -9,15 +9,16 @@ const getAllProductsAndAllCategories = catchAsync(async (req, res) => {
     products: productData,
     categories: categoriesData
   };
-  res.status(httpStatus.OK).send({
-    products: productData,
-    categories: categoriesData
-  });
+  res.send({
+    error: null,
+    data
+  })
 })
 
 const getAllProducts = catchAsync(async (req, res) => {
   const data = await productService.getAllProducts();
   res.status(httpStatus.OK).send({ 
+    error: null,
     data
    });
 });
@@ -31,20 +32,33 @@ const getProductsByCategory = catchAsync(async (req, res) => {
     data = await productService.getAllProducts();
   }
   res.status(httpStatus.OK).send({ 
+    error: null,
     data
   });
 });
 
 const getProductById = catchAsync(async (req, res) => {
   const id = req.params.id;
-  const data = await productService.getProductById(id);
-  if (data === null) {
+  if (id === null) {
+    res.send({
+      error: "ID was not found"
+    })
+  }
+  const productData = await productService.getProductById(id);
+  const categoryID = productData.category;
+  const categoryData = await categoryService.getCategoryById(categoryID);
+  if (productData === null) {
     res.status(httpStatus.NOT_FOUND).send({
-      err: "Not Found"
+      error: "Not Found"
     });
   } else {
+    const data = {
+      productData,
+      categoryData
+    }
     res.status(httpStatus.OK).send({
-      data
+      data,
+      error: null
     });
   }
 });
@@ -52,11 +66,17 @@ const getProductById = catchAsync(async (req, res) => {
 // for test
 const createProduct = catchAsync(async (req, res) => {
   const reqBody = req.body;
-  const newProduct = await productService.createProduct(reqBody);
-  res.send({
-    "success": true,
-    "message": "Create product success",
-  });
+  try {
+    const response = await productService.createProduct(reqBody);
+    res.send({
+      error: null,
+      data: "Create product success"
+    })
+  } catch (error) {
+    res.send({
+      error: error
+    })
+  }
 });
 
 module.exports = {

@@ -1,36 +1,70 @@
-const httpStatus = require("http-status");
-const catchAsync = require("../utils/catchAsync");
-const { cartService, productService } = require("../services");
+const httpStatus = require('http-status');
+const catchAsync = require('../utils/catchAsync');
+const { cartService, productService } = require('../services');
 
-const getAllCartItems = catchAsync(async (req, res) => {
-  const cart = await cartService.getCartByUserId(req.user._id);
-  return cart;
+const getCart = catchAsync(async (req, res) => {
+  const userId = req.locals.userId;
+  if (userId === undefined) {
+    res.send({
+      error: "User was not found"
+    });
+  }
+  try {
+    const response = await cartService.getCart(userId);
+    const cartItems = response.data.cartItems;
+    const newCartItems = await makeupData(cartItems);
+    res.send({
+      error: null,
+      data: newCartItems
+    });
+  } catch (error) {
+    res.send({
+      error: error.message
+    })
+  }
 });
 
-const addItemsToCart = catchAsync(async (req, res) => {
-  const { user, items, quantity } = req;
-  const cart = await cartService.getCartByUserId(user._id);
-  const itemsToBeAdded = await productService.getProductById(items.productId);
-  const newCart = await cartService.addItemsToUserCart(
-    cart,
-    itemsToBeAdded,
-    quantity
-  );
-  console.log(user, newCart);
-  res.status(httpStatus.OK).send({ user, cart: newCart });
-});
+const updateCart = catchAsync(async (req, res) => {
+  const userId = req.locals.userId;
+  if (userId === undefined) {
+    res.send({
+      error: "User was not found"
+    })
+  }
+  const { cart } = req.body;
+  try {
+    const response = await cartService.updateCart({ userId, cart })
+    const cartItems = response.data.cartItems;
+    const newCartItems = await makeupData(cartItems);
+    res.status(httpStatus.OK).send({
+      error: null,
+      data: newCartItems
+    });
+  } catch (error) {
+    res.send({
+      error: error.message
+    })
+  }
+})
 
-const removeCartItems = catchAsync(async (req, res) => {
-  const { user, items, quantity } = req;
-  const cart = await cartService.getCartByUserId(user._id);
-  const itemsToBeDeleted = await productService.getProductById(items.productId);
-  const newCart = await cartService.deleteItemsFromUserCart(
-    cart,
-    itemsToBeAdded,
-    quantity
-  );
-  console.log(user, newCart);
-  res.status(httpStatus.OK).send({ user, cart: newCart });
-});
+const makeupData = async (cartDataInDoc) => {
+  const ids = cartDataInDoc.map((item) => { return item.productId });
+  const productDatas = await productService.getProductsByIds(ids);
+  let newCartItems = [];
+  cartDataInDoc.forEach((item) => {
+    const product = productDatas.filter((data) => { return data._id.toString() === item.productId.toString() })
+    if (product.length > 0) {
+      const newItem = {
+        productData: product[0],
+        quantity: item.quantity
+      };
+      newCartItems.push(newItem);
+    }
+  })
+  return newCartItems;
+}
 
-module.exports = { addItemsToCart, getAllCartItems, removeCartItems };
+module.exports = {
+  getCart,
+  updateCart
+};

@@ -2,6 +2,12 @@ const httpStatus = require('http-status');
 const { Category } = require('../models');
 const ApiError = require('../utils/ApiError');
 
+/**
+ * Create a category
+ * @param {any} userBody 
+ * @returns {Promise<Category>}
+ * @throw
+ */
 const createCategory = async (userBody) => {
   if (await Category.isNameTaken(userBody.name)) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Category Name already taken");
