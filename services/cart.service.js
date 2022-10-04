@@ -50,8 +50,7 @@ const updateCart = async (userBody) => {
  * @throws
  */
 const getCart = async (userId) => {
-  const objectUserId = mongoose.Types.ObjectId(userId);
-  const result = await getUserById(objectUserId);
+  const result = await getUserById(userId);
   if (result === null) {
     throw new ApiError(null, "UserId was not existed")
   }

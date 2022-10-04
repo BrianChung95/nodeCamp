@@ -11,6 +11,14 @@ const getCart = catchAsync(async (req, res) => {
   }
   try {
     const response = await cartService.getCart(userId);
+    if (response === null) {
+      res.send({
+        // error: "No Cart Data"
+        error: null,
+        data: []
+      });
+      return;
+    }
     const cartItems = response.data.cartItems;
     const newCartItems = await makeupData(cartItems);
     res.send({

@@ -4,7 +4,7 @@ const { checkJWT } = require("../middlewares/AuthorizationMiddleware")
 
 const router = express.Router();
 
-router.route('/cart/:userId')
+router.route('/cart/')
   .get(checkJWT, cartController.getCart);
 
 router.route('/cart/:userId')

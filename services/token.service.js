@@ -70,7 +70,7 @@ const generateAuthTokens = async (user) => {
     refreshTokenExpires,
     tokenTypes.REFRESH
   );
-  await saveToken(
+  const doc = await saveToken(
     refreshToken,
     user.id,
     refreshTokenExpires,
@@ -78,38 +78,34 @@ const generateAuthTokens = async (user) => {
   );
 
   return {
-    access: {
-      token: accessToken,
-      expires: accessTokenExpires.toDate(),
-    },
-    refresh: {
-      token: refreshToken,
-      expires: refreshTokenExpires.toDate(),
-    },
+    // access: {
+    //   token: accessToken,
+    //   expires: accessTokenExpires.toDate(),
+    // },
+    // refresh: {
+    //   token: refreshToken,
+    //   expires: refreshTokenExpires.toDate(),
+    // },
+    access: doc.token
   };
 };
 
 const validateToken = async (jwt) => {
   const token = await Token.findOne({'token': jwt});
   if (token === null) {
-    return {
-      success: false,
-      error: "Invalidate Token: not existed"
-    }
+    // return {
+    //   success: false,
+    //   error: "Invalidate Token: not existed"
+    // }
+    throw new ApiError(null, "Invalidate Token: not existed")
   }
   const expiredDate = token.expires;
   const parsedExpirtedDate = Date.parse(expiredDate);
   const now = new Date();
   if (parsedExpirtedDate < now.getTime()) {
-    return {
-      success: false,
-      error: "Invalidate Token: expired"
-    }
+    throw new ApiError(null, "Invalidate Token: expired")
   } else {
-    return {
-      success: true,
-      data: token._id
-    }
+    return token
   }
 }
 

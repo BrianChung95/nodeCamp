@@ -44,14 +44,10 @@ const getProductById = catchAsync(async (req, res) => {
       error: "ID was not found"
     })
   }
-  const productData = await productService.getProductById(id);
-  const categoryID = productData.category;
-  const categoryData = await categoryService.getCategoryById(categoryID);
-  if (productData === null) {
-    res.status(httpStatus.NOT_FOUND).send({
-      error: "Not Found"
-    });
-  } else {
+  try {
+    const productData = await productService.getProductById(id);
+    const categoryID = productData.category;
+    const categoryData = await categoryService.getCategoryById(categoryID);
     const data = {
       productData,
       categoryData
@@ -60,7 +56,12 @@ const getProductById = catchAsync(async (req, res) => {
       data,
       error: null
     });
+  } catch (error) {
+    res.send({
+      error: error.message
+    })
   }
+  
 });
 
 // for test
